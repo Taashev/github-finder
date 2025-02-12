@@ -1,2 +1,10 @@
 .app {
+	width: 100%;
+	max-width: 1960px;
+	min-width: 320px;
+	min-height: 100dvh;
+}
+
+.title {
+	text-align: center;
 }
