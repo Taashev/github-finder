@@ -1,21 +1,26 @@
 import { Typography } from '@mui/material';
 
 import { SearchBar } from '../search-bar/search-bar';
+import { RepositoryList } from '../repository-list/repository-list';
+import { AlertList } from '../alert-list/alert-list';
 
-import styles from './App.module.css';
+import { AppContainer } from './app-theme';
 
 export function App() {
 	return (
-		<div className={styles.app}>
+		<AppContainer>
 			<Typography
-				className={styles.title}
-				variant="h1"
+				variant="h4"
+				component={'h1'}
+				textAlign={'center'}
 				gutterBottom
-				fontSize={40}
 			>
 				GitHub Finder
 			</Typography>
 			<SearchBar />
-		</div>
+			<RepositoryList />
+
+			<AlertList />
+		</AppContainer>
 	);
 }

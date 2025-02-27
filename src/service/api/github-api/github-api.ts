@@ -1,39 +1,23 @@
-import { BaseApi, BaseApiType } from '../base-api';
+import { BaseApi, BaseApiUrl } from '../base-api';
 
-export type GitHubApiType = BaseApiType & { apiKey?: string };
+export type GitHubApiKey = string;
 
 export class GitHubApi extends BaseApi {
-	protected _apiKey: string | undefined;
+	protected _apiKey?: GitHubApiKey;
+	protected _typeErrorPrefix = 'github';
 
-	constructor({ baseUrl, apiKey }: GitHubApiType) {
-		super({ baseUrl });
-
-		this._auth = this._auth.bind(this);
-
+	constructor(baseUrl: BaseApiUrl, apiKey?: GitHubApiKey) {
+		super(baseUrl);
 		this._apiKey = apiKey;
 	}
 
-	protected async _request(
-		url: string,
-		method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' = 'GET',
-		headers: HeadersInit = { 'Content-Type': 'application/json' },
-		body?: BodyInit,
-	) {
-		const options: RequestInit = {
-			method,
-			headers,
-		};
+	protected _request(url: RequestInfo | URL, options: RequestInit = {}) {
+		this._addAuthHeader(options);
 
-		this._auth(options);
-
-		if (body && method !== 'GET') {
-			options.body = JSON.stringify(body);
-		}
-
-		return fetch(url, options).then(this._checkResponse);
+		return super._request(url, options);
 	}
 
-	protected async _auth(options: RequestInit) {
+	private _addAuthHeader(options: RequestInit) {
 		if (this._apiKey) {
 			options.headers = { ...options.headers, Authorization: this._apiKey };
 		}

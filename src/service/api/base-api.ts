@@ -1,31 +1,35 @@
-import { AppError } from '../../types/app-error';
+import { HttpError, HttpUrl } from '../../errors/http-error/http-error';
 
-export type BaseApiType = {
-	baseUrl: string;
-};
+export type BaseApiBaseUrl = HttpUrl;
+export type BaseApiUrl = HttpUrl;
+export type BaseApiTypeErrorPrefix = string;
 
 export class BaseApi {
-	protected _baseUrl: string;
+	protected _typeErrorPrefix: BaseApiTypeErrorPrefix = 'http';
+	protected _baseUrl: BaseApiBaseUrl;
+	protected _url: HttpUrl = '';
 
-	constructor({ baseUrl }: BaseApiType) {
+	constructor(baseUrl: BaseApiUrl) {
 		this._baseUrl = baseUrl;
 
 		this._checkResponse = this._checkResponse.bind(this);
 	}
 
 	protected async _checkResponse(response: Response) {
-		const contentType = response.headers.get('Content-Type');
+		const statusCode = response.status;
+		const contentType = response.headers.get('Content-Type') as string;
 
-		const payload =
-			contentType && (await this._parseResponse(response, contentType));
+		const payload = await this._parseResponse(response, contentType);
 
-		if (response.ok) {
-			return payload;
+		if (!response.ok) {
+			const error = this._createError(
+				Number(payload.status) || statusCode,
+				payload,
+			);
+			throw error;
 		}
 
-		const error = this._createAppError(response.status, payload);
-
-		throw error;
+		return payload;
 	}
 
 	protected async _parseResponse(response: Response, contentType: string) {
@@ -37,23 +41,58 @@ export class BaseApi {
 			return await response.blob();
 		}
 
-		if (
-			contentType.includes('application/xml') ||
-			contentType.includes('text/html') ||
-			contentType.includes('text/xml') ||
-			contentType.includes('text/')
-		) {
-			return await response.text();
-		}
-
 		return await response.text();
 	}
 
-	private _createAppError(status: number, errorData: any): AppError {
-		return {
-			status,
-			message: errorData?.message || 'Неизвестная ошибка',
-			details: errorData,
+	private _normalizeBodyRequest(options: RequestInit): void {
+		if (options.method === 'GET' && options.body) {
+			this._deleteBodyRequest(options);
+			return;
+		}
+
+		if (options.body) {
+			this._serializeBodyRequest(options);
+		}
+	}
+
+	private _serializeBodyRequest(options: RequestInit) {
+		options.body = JSON.stringify(options.body);
+	}
+
+	private _deleteBodyRequest(options: RequestInit) {
+		delete options.body;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	protected _createError(statusCode: number, errorData: any): HttpError {
+		const url = this._url;
+		const originError = errorData;
+		const message =
+			errorData?.message ?? 'Что то пошло не так. Попробуйте еще раз.';
+
+		return new HttpError(message, {
+			statusCode,
+			originError,
+			url,
+		});
+	}
+
+	protected _request(url: RequestInfo | URL, options: RequestInit = {}) {
+		this._url = url;
+
+		options.method ??= 'GET';
+
+		options.headers = {
+			'Content-Type': 'application/json',
+			...options.headers,
 		};
+
+		this._normalizeBodyRequest(options);
+
+		return fetch(url, options)
+			.then(this._checkResponse)
+			.catch((error) => {
+				throw error;
+			});
 	}
 }

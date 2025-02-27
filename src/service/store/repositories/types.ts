@@ -4,4 +4,9 @@ export type Repository = {
 	html_url: string;
 	description: string | null;
 	stargazers_count: number;
+	updatedAt: string;
+	owner: {
+		id: number;
+		login: string;
+	};
 };

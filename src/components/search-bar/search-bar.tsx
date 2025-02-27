@@ -1,57 +1,46 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { Box, TextField } from '@mui/material';
+import { ChangeEvent, useCallback, useState } from 'react';
+import { TextField } from '@mui/material';
 
 import { useAppDispatch, useAppSelector } from '../../service/store';
 import { fetchRepositoriesByUsername } from '../../service/store/repositories/thunks';
+import { repositoriesActions } from '../../service/store/repositories/repositories.slice';
+import { searchActions } from '../../service/store/search/search.slice';
+import { useDebounce } from '../../hooks/useDebounce';
 
 export function SearchBar() {
 	const dispatch = useAppDispatch();
-	const error = useAppSelector((state) => state.search.error);
-	const isError = useAppSelector((state) => state.search.isError);
-
+	const searchError = useAppSelector((state) => state.search.error);
 	const [searchInput, setSearchInput] = useState('');
 
-	const timeoutIdRef = useRef<number | null>(null);
-
-	useEffect(() => {
-		if (searchInput.trim().length > 0) {
-			timeoutIdRef.current = setTimeout(() => {
-				dispatch(
-					fetchRepositoriesByUsername({
-						searchInput,
-						page: 1,
-					}),
-				);
-			}, 1000);
-		}
-
-		return () => {
-			if (timeoutIdRef.current !== null) {
-				clearTimeout(timeoutIdRef.current);
+	const handleSearch = useCallback(
+		function () {
+			if (searchInput.trim().length > 0) {
+				dispatch(repositoriesActions.resetRepositories());
+				dispatch(fetchRepositoriesByUsername({ searchInput, page: 1 }));
 			}
-		};
-	}, [dispatch, searchInput]);
+		},
+		[dispatch, searchInput],
+	);
+
+	useDebounce(handleSearch, [searchInput]);
 
 	function handlerSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
+		if (searchError !== null) {
+			dispatch(searchActions.resetError());
+		}
+
 		setSearchInput(e.target.value);
 	}
 
 	return (
-		<div>
-			<Box paddingInline={2}>
-				<TextField
-					id="standard-basic"
-					label="Поиск"
-					variant="outlined"
-					fullWidth
-					required
-					slotProps={{ htmlInput: { minLength: 1 } }}
-					onChange={handlerSearchInputChange}
-					error={isError}
-					helperText={error}
-					value={searchInput}
-				/>
-			</Box>
-		</div>
+		<TextField
+			label="Поиск"
+			variant="outlined"
+			fullWidth
+			onChange={handlerSearchInputChange}
+			value={searchInput}
+			error={searchError !== null}
+			helperText={searchError}
+		/>
 	);
 }
