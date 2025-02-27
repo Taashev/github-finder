@@ -5,7 +5,7 @@ import { ThemeProvider } from '@mui/material';
 
 import { store } from './service/store/index.ts';
 
-import { App } from './components/app/app.tsx';
+import { App } from './pages/app/app.tsx';
 
 // шрифты библиотеки MUI
 import '@fontsource/roboto/300.css';

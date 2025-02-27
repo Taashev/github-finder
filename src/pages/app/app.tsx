@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 
-import { SearchBar } from '../search-bar/search-bar';
-import { RepositoryList } from '../repository-list/repository-list';
-import { AlertList } from '../alert-list/alert-list';
+import { SearchBar } from '../../components/search-bar/search-bar';
+import { RepositoryList } from '../../components/repository-list/repository-list';
+import { AlertList } from '../../components/alert-list/alert-list';
 
 import { AppContainer } from './app-theme';
 
