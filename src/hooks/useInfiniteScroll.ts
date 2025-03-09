@@ -1,15 +1,15 @@
 import { useEffect, useRef } from 'react';
 
-type UseInfiniteScrollProps<T> = {
+type UseInfiniteScrollProps = {
 	enable?: boolean;
-	deps?: T;
+	deps?: unknown[];
 	rootMargin?: string;
 	root?: Element | Document | null;
 };
 
-export function useInfiniteScroll<T>(
+export function useInfiniteScroll(
 	onIntersect: (entry?: IntersectionObserverEntry) => void,
-	props: UseInfiniteScrollProps<T>,
+	props: UseInfiniteScrollProps,
 ) {
 	const { enable = true, deps = [], rootMargin, root } = props;
 

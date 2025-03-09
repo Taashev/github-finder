@@ -4,7 +4,7 @@ import { SearchBar } from '../../components/search-bar/search-bar';
 import { RepositoryList } from '../../components/repository-list/repository-list';
 import { AlertList } from '../../components/alert-list/alert-list';
 
-import { AppContainer } from './app-theme';
+import { AppContainer } from './app.styled';
 
 export function App() {
 	return (

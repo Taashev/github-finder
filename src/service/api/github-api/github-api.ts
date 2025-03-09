@@ -4,7 +4,6 @@ export type GitHubApiKey = string;
 
 export class GitHubApi extends BaseApi {
 	protected _apiKey?: GitHubApiKey;
-	protected _typeErrorPrefix = 'github';
 
 	constructor(baseUrl: BaseApiUrl, apiKey?: GitHubApiKey) {
 		super(baseUrl);

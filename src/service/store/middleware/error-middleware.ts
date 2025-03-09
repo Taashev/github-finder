@@ -27,12 +27,7 @@ export const errorMiddleware: Middleware = (store) => (next) => (action) => {
 			if (error.details.statusCode === 404) {
 				dispatch(searchActions.setError(error.message));
 			} else {
-				dispatch(
-					appNotificationActions.createError({
-						message: error.message,
-						description: error.details.description,
-					}),
-				);
+				dispatch(appNotificationActions.createError(error.message));
 			}
 		}
 	}

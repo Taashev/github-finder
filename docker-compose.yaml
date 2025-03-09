@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        VITE_GITHUB_API_KEY: ${VITE_GITHUB_API_KEY}
+    ports:
+      - "${APP_PORT:-3000}:4173"  # Дефолтный порт 3000 если APP_PORT не указан в .env
+    env_file:
+      - .env

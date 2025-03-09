@@ -1,8 +1,5 @@
-import {
-	AppError,
-	AppErrorMessage,
-	AppErrorDetails,
-} from '../app-error/app-error';
+import { AppError } from '../app-error/app-error';
+import { AppErrorMessage, AppErrorDetails } from '../app-error/types';
 
 const HTTP_ERROR_TYPE = 'http';
 

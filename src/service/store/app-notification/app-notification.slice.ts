@@ -2,13 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { generateUniqueId } from '../../../utils/generate-unique-id';
 
+type AppNotificationId = string;
 type AppNotificationType = 'error';
-type AppNotificationError = { message: string; description?: string };
+type AppNotificationData = string;
 
-type AppNotification = {
-	id: string;
+export type AppNotification = {
+	id: AppNotificationId;
 	type: AppNotificationType;
-	data: AppNotificationError;
+	message: AppNotificationData;
 };
 
 type InitialState = {
@@ -23,11 +24,16 @@ const appNotificationSlice = createSlice({
 	name: 'appNotification',
 	initialState,
 	reducers: {
-		createError: (state, action: PayloadAction<AppNotificationError>) => {
+		createError: (state, action: PayloadAction<AppNotificationData>) => {
 			const id = generateUniqueId('notification');
 			const type = 'error' as const;
-			const data = action.payload;
-			const notification = { id, type, data };
+			const message = action.payload;
+
+			const notification = {
+				id,
+				type,
+				message,
+			};
 
 			state.stack.push(notification);
 		},

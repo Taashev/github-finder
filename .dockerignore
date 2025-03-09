@@ -1,0 +1,20 @@
+# Исключаем файлы и директории
+node_modules/
+*.log
+*.md
+.dockerignore
+.git
+.gitignore
+
+# Исключаем временные файлы
+*.tmp
+*.bak
+
+# Исключаем env файлы
+.env
+*.env
+.env*
+
+# Исключаем все, кроме нужных директорий
+!src/
+!public/

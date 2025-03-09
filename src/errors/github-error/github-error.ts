@@ -1,4 +1,4 @@
-import { AppErrorMessage } from '../app-error/app-error';
+import { AppErrorMessage } from '../app-error/types';
 import { HttpError, HttpErrorDetails } from '../http-error/http-error';
 
 export enum GITHUB_ERRORS_TYPE {

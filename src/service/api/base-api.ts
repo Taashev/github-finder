@@ -2,10 +2,8 @@ import { HttpError, HttpUrl } from '../../errors/http-error/http-error';
 
 export type BaseApiBaseUrl = HttpUrl;
 export type BaseApiUrl = HttpUrl;
-export type BaseApiTypeErrorPrefix = string;
 
 export class BaseApi {
-	protected _typeErrorPrefix: BaseApiTypeErrorPrefix = 'http';
 	protected _baseUrl: BaseApiBaseUrl;
 	protected _url: HttpUrl = '';
 
